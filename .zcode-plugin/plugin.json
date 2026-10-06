@@ -1,0 +1,15 @@
+{
+  "name": "waza",
+  "version": "3.38.0",
+  "description": "Engineering workflow skills: think, check, hunt, ui, read, write, learn, and health.",
+  "skills": [
+    "./skills/think",
+    "./skills/check",
+    "./skills/hunt",
+    "./skills/ui",
+    "./skills/read",
+    "./skills/write",
+    "./skills/learn",
+    "./skills/health"
+  ]
+}
