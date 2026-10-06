@@ -107,7 +107,7 @@ Codex shows remaining quota; the Claude Code statusline above shows used percent
 
 ### Optional Rules
 
-Three independent toggles. Copy the ones you want (swap `claude-code` for `codex` or `antigravity-cli` on those agents):
+Optional rules apply beyond skill invocations when installed into your agent's persistent instructions. Installing Waza skills alone does not enable them. Copy the ones you want (swap `claude-code` for `codex` or `antigravity-cli` on those agents):
 
 ```bash
 (
@@ -125,8 +125,14 @@ Three independent toggles. Copy the ones you want (swap `claude-code` for `codex
 
   # Routing hint: tells non-Claude hosts to prefer Waza skills when a request matches their triggers
   bash "$WAZA_RULE_SCRIPT" waza-routing claude-code
+
+  # Clear everyday replies: consistent terms, explicit conditions, preserved uncertainty
+  # Clarity is available on main; it is not in the current release yet.
+  WAZA_REF=main bash "$WAZA_RULE_SCRIPT" clarity claude-code
 )
 ```
+
+[Clarity](rules/clarity.md) uses clear-writing principles from ASD-STE100 without imposing controlled-English grammar or changing your voice. Re-run its command to update the installed rule, then start a new session. Codex installs a marked block in `~/.codex/AGENTS.md`; Claude Code and Antigravity install a rule file. For other tools, copy the rule into their persistent custom instructions.
 
 <div align="center">
   <img src="https://gw.alipayobjects.com/zos/k/24/vfkGOi.png" width="1000" />
@@ -152,9 +158,11 @@ rm -f ~/.claude/statusline.sh
 rm -f ~/.claude/rules/english.md
 rm -f ~/.claude/rules/anti-patterns.md
 rm -f ~/.claude/rules/waza-routing.md
+rm -f ~/.claude/rules/clarity.md
 ```
 
 For Claude Desktop, delete Waza from Customize > Skills. For Codex rule installs, remove the marked Waza blocks from `~/.codex/AGENTS.md`.
+For Antigravity, remove the selected rule file from `~/.gemini/antigravity-cli/rules/`. Remove copied rules from other tools' custom instructions. Start a new session after removing a rule.
 
 ## Support
 
