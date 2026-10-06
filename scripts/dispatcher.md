@@ -21,7 +21,7 @@ You have eight skills available. Match the user's intent to the right skill, rea
 | Any URL or PDF to fetch, read this, fetch this page | read | `skills/read/SKILL.md` |
 | New feature, architecture, how should I design this, value judgment, executable plan, handoff | think | `skills/think/SKILL.md` |
 | UI, component, page, visual interface, frontend, artifact-grounded screenshot aesthetic complaint | ui | `skills/ui/SKILL.md` |
-| Writing, editing prose, polish, release notes, launch/social copy, remove AI tone | write | `skills/write/SKILL.md` |
+| Writing, editing prose, clarify technical instructions, polish, release notes, launch/social copy, remove AI tone | write | `skills/write/SKILL.md` |
 <!-- routing-table:end -->
 
 ## How This Works

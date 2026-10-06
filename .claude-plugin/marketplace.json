@@ -101,7 +101,7 @@
     },
     {
       "name": "waza-write",
-      "description": "Rewrites and polishes Chinese or English prose and product copy. Use when drafting, editing, localizing, or cutting AI tone. Not for code comments or commit messages.",
+      "description": "Rewrites and polishes Chinese or English prose, technical instructions, and product copy. Use when drafting, editing, localizing, or cutting AI tone. Not for code comments or commit messages.",
       "version": "3.38.0",
       "category": "development",
       "source": "./skills/write",
