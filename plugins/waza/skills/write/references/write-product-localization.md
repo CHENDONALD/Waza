@@ -12,7 +12,7 @@ Use this when reviewing product pages, release notes, app strings, runtime notif
 
 ## High-Signal Failure Patterns
 
-- **Chinese**: Literal possessives such as "你的 Mac" or "你的设备" when plain "Mac" or "本机" is enough; machine-output verbs such as "检测到" when a result sentence would read better; mixed punctuation; English words with stable Chinese equivalents. Character-level half/full-width punctuation and CJK/Latin spacing are checked by `check-punctuation.sh`; this list keeps the locale-voice judgment calls.
+- **Chinese**: Literal possessives such as "你的 Mac" or "你的设备" when plain "Mac" or "本机" is enough; machine-output verbs such as "检测到" or "发现" when a direct result phrase reads better (prefer "%d 个失效项" / "无关联残留" over "发现 %d 个失效项" / "未发现关联残留"); redundant continuous-tense stacking ("正在...中" -> use concise status "采集中" or natural predicate "正在采集"); unlocalized platform UI terms (in macOS Simplified Chinese, use official platform terms like `访达` not `Finder`, `废纸篓` not `垃圾箱`, `宗卷` not `卷`, `App` over bureaucratic `应用程序`, while keeping exact commercial app names and code identifiers untranslated, and preserving `Finder` in Traditional Chinese); internal developer primitives literally translated into confusing words (e.g. `App Group` / `Group Containers` must not be translated as "组容器" which invites confusion with containers/Docker; package receipts as "安装收据" rather than shopping "收据"); mixed punctuation; English words with stable Chinese equivalents. Character-level half/full-width punctuation and CJK/Latin spacing are checked by `check-punctuation.sh`; this list keeps the locale-voice judgment calls.
 - **Traditional Chinese**: Mainland phrasing copied into Traditional copy; stale locale URLs; words that feel mainland-specific or overly colloquial for the target audience.
 - **Japanese**: English noun compounds translated too tightly; missing spaces around product terms when the project style uses them; UI strings that sound like a manual instead of a Mac app.
 - **Korean**: Inconsistent platform terms, especially menu bar / menu item wording; overly literal second-person sentences.
@@ -29,6 +29,8 @@ Language-agnostic shapes that survive translation review because each locale rea
 - **Hedged verdict**: a question mark or a "maybe / possibly" wrapper around a result the product already computed. A verdict sentence states the verdict; the uncertainty belongs in the value, not the punctuation.
 - **Untranslated domain noun**: a term borrowed from the implementation used as a metric name or label (ledger, buffer, daemon, quota). Replace it with the word the user would say for the same thing; if there is no such word, the metric is measuring something the user did not ask about.
 - **Alarming detail**: a user-facing string that reports the failure mechanism instead of the user's next action. Release notes, error banners, and update prompts keep what the reader does; the mechanism goes in the commit.
+- **Glued inline tags**: An HTML inline tag (`<b>`, `<span>`, `<code>`) or markdown emphasis marker touching the following or preceding word without spacing, producing concatenated words in plain text or copy-paste (`<b>Week</b>Which` -> `<b>Week</b> Which`).
+- **Unnatural translation register**: Dialectal, archaic, or bureaucratic phrasing in user policies or customer interactions (e.g. "不合用" in refund/support policies -> natural spoken phrases like "不符合预期" / "觉得不好用").
 
 ## Review Procedure
 
@@ -52,6 +54,7 @@ Language-agnostic shapes that survive translation review because each locale rea
 - Do not glue translated fragments with punctuation in code or copy. A full sentence or format string per locale is safer.
 - Avoid broad find-and-replace unless it is followed by residual scans. Broad accent fixes can produce broken words.
 - Leave product names and established UI names in English when the product itself uses them that way.
+- Format UI navigation and menu breadcrumbs with spaced ` › ` (U+203A, e.g. `Settings › General › Storage` or `设置 › 通用 › 存储空间`) rather than ASCII `>` or arrows (`->` / `→`).
 - Patch the intended fields without reserializing whole catalogs. Preserve adjacent punctuation and unrelated edits; a failed exact-text patch can be a comma mismatch, not proof of concurrent work.
 - Treat command examples as inert text. Verify behavior through read-only sources, not by executing cleanup or troubleshooting examples. Use direct file patches rather than shell interpolation that can execute backticks or dollar expressions in prose.
 
