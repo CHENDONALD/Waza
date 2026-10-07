@@ -26,7 +26,7 @@ Two lanes share one report:
 - **Agent config health**: Codex/Claude/Pi instruction drift, permissions, hooks, MCP, skills, and memory supply chain.
 - **AI maintainability health**: non-obvious constraint reachability, risk-backed hotspot ownership, verifier coverage, generated-artifact checks, and stale or misleading durable docs.
 
-**Output language:** Check in order: (1) project agent instructions (`AGENTS.md` before runtime-specific files); (2) global agent instructions; (3) user's recent language; (4) English.
+**Output language:** Follow the user's current language or explicit language request. Use applicable project and global defaults only when the request does not establish a language.
 
 **Budget posture:** Start with the summary audit. Escalate automatically when the user asks for a deep, full, complete, thorough, "深入", "完整", "彻底", or "继续跑完" audit, when the user explicitly mentions AI coding code rot, Codex/Claude config drift, unclear context, missing verification, verifier output that points at stale paths, or "代码变烂", when current project instructions or remembered user preference says to run deep health checks by default, or when the summary pass exposes a critical ambiguity that cannot be resolved locally. Inventory counts never trigger escalation on their own. Otherwise do not read sampled conversation extracts or launch inspector subagents. Tell the user before escalating because deep health audits can consume significant token quota.
 
@@ -212,4 +212,4 @@ Outdated items, global vs local placement, context hygiene, stale allowedTools e
 
 If no issues: `All relevant checks passed. Nothing to fix.`
 
-The report never auto-applies fixes without confirmation, and never acts as a heavy lint, typecheck, duplication, or architecture-rewrite substitute; `/health` reports maintainability guardrails and concrete next actions only.
+A report-only request never authorizes fixes; an explicit optimization or repair request continues into its authorized repair phase without another confirmation. The audit is not a heavy lint, typecheck, duplication, or architecture-rewrite substitute; `/health` reports maintainability guardrails and concrete next actions only.
