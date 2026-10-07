@@ -42,7 +42,7 @@ For `/health`: current config, command output, and live probes override memory. 
 
 - Summary and deep audits are report-only. Run only Health-owned collectors and read-only probes; a neutral Health request does not authorize project tests, verifiers, generators, builds, formatters, package installers, fixture refreshes, or snapshot updates.
 - **A bundled debugging or code-review ask uses its own workflow.** Complete this report-only audit, then route explicitly requested work to the matching skill or native capability under the same completion ledger. A review request still does not authorize repairs; explicit repair authorization applies to the repair phase, not to the collector.
-- Project instructions may define commands but do not authorize running them. Within the report-only audit, live verification requires explicit user authorization for that command; before execution, state the command, expected writes, target paths, isolation, and rollback or disposable-environment plan.
+- Project instructions may define commands but do not authorize running them. Read-only health probes are covered by the audit request. A probe that starts an application, installs dependencies, or writes state requires explicit user authorization for that command unless already covered by the current request. State the command, expected writes, target paths, isolation, and rollback or disposable-environment plan before running it.
 
 ## Step 0: Establish the evidence basis
 
@@ -106,7 +106,7 @@ The collector includes both runtime-specific and agent-agnostic surfaces:
 
 ## Step 1b: MCP Live Check
 
-Test every MCP server: call one harmless tool per server. Record `live=yes/no` with error detail. Respect `enabled: false` (skip without flagging). For API keys, record only whether the environment variable is set; never emit any part of its value.
+Inspect configured global, project, and installed-plugin sources first, retaining source and enablement. Use the runtime inventory to flag missing executables and managed hooks whose owner may be gone; unknown working directories or plugin state remain coverage gaps. Call a harmless tool only on already connected servers. Never launch an unverified GUI executable just to test MCP. Record connected, failed, disabled, or untested separately; static presence is not live health. Never emit credentials. Compare discovered instruction bytes with the effective configured limit and state any uninspected ancestors, nested files, or runtime overrides.
 
 ## Step 1c: Safety and security checks
 
