@@ -23,7 +23,7 @@ Use the rows that explain a real misreading. These are semantic checks, not word
 
 STE-inspired clarity is useful here; a universal controlled-English grammar is not. Keep natural tenses, phrasal verbs such as `sign in`, domain vocabulary, and sentence rhythm when they carry the correct meaning. There are no fixed sentence, paragraph, or noun-count caps. English word limits do not transfer to Chinese. Existing project punctuation conventions still apply.
 
-Terminology consistency is scoped to the document and its product model, not a global one-word-one-meaning dictionary. Define an unfamiliar term only when the audience needs it and the source establishes its meaning; do not append a glossary to every output. Prefer the real interface term over an easier synonym that users cannot find on screen.
+Terminology consistency is scoped to the document and its product model, not a global one-word-one-meaning dictionary. Define an unfamiliar term only when the audience needs it and the source establishes its meaning; do not append a glossary to every output. Prefer the real interface term over an easier synonym that users cannot find on screen. When chaining interface navigation paths, use spaced single chevrons ` › ` (U+203A, e.g. `Settings › General › Storage` or `设置 › 通用 › 存储空间`) rather than ASCII `>` (which collides with shell redirection, markdown quotes, or comparison operators) or arrows (`->` / `→`).
 
 ## Meaning Check
 
@@ -35,4 +35,6 @@ For an unresolved ambiguity, a review names the competing readings; a rewrite as
 
 ## Sources and Boundary
 
-This is an original adaptation informed by [asd-ste100-skill's writing-rule summary](https://github.com/danyuchn/asd-ste100-skill/blob/master/references/writing-rules.md) and its [scope and preservation guidance](https://github.com/danyuchn/asd-ste100-skill/blob/master/SKILL.md). It uses selected clarity principles, not that project's strict or STE-flavored modes. Waza does not reproduce the approved dictionary or certify ASD-STE100 compliance. For work that explicitly requires the standard, consult the [official ASD-STE100 source](https://www.asd-ste100.org/).
+This is an original adaptation informed by [asd-ste100-skill's writing-rule summary](https://github.com/danyuchn/asd-ste100-skill/blob/master/references/writing-rules.md) and its [scope and preservation guidance](https://github.com/danyuchn/asd-ste100-skill/blob/master/SKILL.md). It uses selected clarity principles, not that project's strict or STE-flavored modes. Waza does not reproduce the approved dictionary or certify ASD-STE100 compliance.
+
+When explicitly asked to assess compliance with a writing standard, consult its primary text at the applicable version and identify that version in the assessment. Report the requirements actually checked and any coverage gaps. Partial checks support only partial conclusions; missing source text or evidence rules out a claim of overall compliance. For STE, use the [official ASD-STE100 source](https://www.asd-ste100.org/). The [STEMG white paper on STE and AI](https://www.asd-ste100.org/assets/files/WhitePaper-ASD-STE100_and_AI.pdf) discusses the limits of AI-assisted technical writing and review.

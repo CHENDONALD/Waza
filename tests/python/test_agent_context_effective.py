@@ -39,6 +39,67 @@ def write_skill(path: Path, name: str, body: str = "same body") -> None:
     path.write_text(f"---\nname: {name}\n---\n\n{body}\n", encoding="utf-8")
 
 
+def test_disabled_plugins_are_not_reported_enabled(tmp_path: Path):
+    project, home = tmp_path / "project", tmp_path / "home"
+    project.mkdir()
+    config = home / ".codex" / "config.toml"
+    config.parent.mkdir(parents=True)
+    config.write_text('[plugins."active@example"]\nenabled = true\n'
+                      '[plugins."disabled@example"]\nenabled = false\n'
+                      '[plugins."active@example".mcp_servers.server]\nenabled = true\n')
+    output = run_context(project, home)
+    enabled = output.split("enabled_plugins:\n", 1)[1].split("marketplaces:", 1)[0]
+    assert "active@example" in enabled
+    assert "disabled@example" not in enabled
+    assert "mcp_servers" not in enabled
+
+
+def test_global_runtime_inventory_and_instruction_limit(tmp_path: Path):
+    project, home = tmp_path / "project", tmp_path / "home"
+    project.mkdir()
+    (project / "AGENTS.md").write_text("x" * 33000)
+    write_json(home / ".claude.json", {"mcpServers": {
+        "broken": {"command": str(home / "missing-executable")},
+        "remote": {"url": "https://example.com/mcp", "headers": {"Secret": "DO-NOT-PRINT"}},
+    }})
+    write_json(home / ".claude" / "settings.json", {"hooks": {"Stop": [{"hooks": [
+        {"type": "mcp_tool", "server": "remote", "tool": "turn_ended"}
+    ]}]}})
+    write_json(home / ".codex" / "hooks.json", {"hooks": {"Stop": [{"hooks": [
+        {"type": "command", "command": "true # supacode-managed-hook"}
+    ]}]}})
+    output = run_context(project, home)
+    assert "claude:user mcp=broken state=enabled executable=missing" in output
+    assert "claude:user mcp=remote state=enabled executable=remote" in output
+    assert "claude:global hook=Stop type=mcp_tool" in output
+    assert "codex:global managed_hook=supacode" in output
+    assert "project_instruction_limit_exceeded: yes" in output
+    assert "DO-NOT-PRINT" not in output
+
+
+def test_runtime_plugin_sources_and_disabled_executables(tmp_path: Path):
+    project, home = tmp_path / "project", tmp_path / "home"
+    project.mkdir()
+    plugin = home / "plugin"
+    write_json(plugin / ".mcp.json", {"plugin-server": {"url": "https://example.com"}})
+    write_json(home / ".claude" / "settings.json", {"enabledPlugins": {"demo": True}})
+    write_json(home / ".claude" / "plugins" / "installed_plugins.json", {
+        "plugins": {"demo": [{"scope": "user", "installPath": str(plugin)}]}})
+    write_json(home / ".claude.json", {"mcpServers": {
+        "off": {"enabled": False, "command": str(home / "missing")}}})
+    output = run_context(project, home)
+    assert "claude:plugin:demo mcp=claude:plugin:demo:plugin-server" in output
+    assert "mcp=off state=disabled executable=skipped" in output
+
+
+def test_runtime_inventory_tolerates_malformed_collections(tmp_path: Path):
+    project, home = tmp_path / "project", tmp_path / "home"
+    project.mkdir()
+    write_json(home / ".claude.json", {"projects": {str(project): {"mcpServers": []}}})
+    write_json(home / ".claude" / "settings.json", {"hooks": {"Stop": [{"hooks": None}]}})
+    assert "=== RUNTIME CONFIGURATION ===" in run_context(project, home)
+
+
 def complete_claude_floor(home: Path) -> dict[str, object]:
     hook = home / "hooks" / "block-pipe-to-shell.py"
     hook.parent.mkdir(parents=True, exist_ok=True)
