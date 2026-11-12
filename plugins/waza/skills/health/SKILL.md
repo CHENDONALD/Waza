@@ -1,8 +1,8 @@
 ---
 name: health
-description: "Audits agent config, instruction drift, hooks or MCP, and AI maintainability. Use when Claude, Codex, or Pi setup looks wrong. Not for application bugs or PR review."
-when_to_use: "检查claude, 检查codex, 检查pi, Codex 配置, Pi 配置, agent instructions, 健康度, 配置检查, 配置对不对, AI coding 腐化, Claude ignoring instructions, Pi coding agent, check config, settings not working, audit config"
-dispatch_intent: "Codex/Claude/Pi ignoring instructions, agent config audit, hooks/MCP broken, health token usage, AI coding code rot, risk-backed hotspot ownership, unreachable project constraints, unclear context, missing verification, stale verifier output"
+description: "Audits or prunes agent config, instruction drift, hooks or MCP, and AI maintainability. Use when Claude, Codex, or Pi setup looks wrong or guidance needs slimming. Not for application bugs or PR review."
+when_to_use: "检查claude, 检查codex, 检查pi, Codex 配置, Pi 配置, agent instructions, 健康度, 配置检查, 配置对不对, AI coding 腐化, 精简规则, 精简 skills, 规则瘦身, Claude ignoring instructions, Pi coding agent, check config, settings not working, audit config, prune guidance, slim AGENTS.md"
+dispatch_intent: "Codex/Claude/Pi ignoring instructions, agent config audit, prune or slim agent guidance and skills, hooks/MCP broken, health token usage, AI coding code rot, risk-backed hotspot ownership, unreachable project constraints, unclear context, missing verification, stale verifier output"
 ---
 
 # Health: Agent-Assisted Engineering Health
@@ -32,6 +32,8 @@ Two lanes share one report:
 
 **Conversation scope:** When the request names only static material (`AGENTS.md`, skills, rules, settings, "只审查指令和配置"), pass `instructions` as the first argument to `collect-data.sh` and the run skips session history, reporting it as out of scope rather than as a coverage gap. This is chosen from the request, not a switch the user has to know about. Otherwise: Summary scans up to three recent previous sessions for the current project across Claude and Codex from a bounded candidate window when those local histories exist. Deep streams every previous current-project session across both runtimes for signals while printing only bounded extracts and a coverage receipt. Other projects remain out of scope by default. Only when the user explicitly asks for all conversations or cross-project capability distillation, run `python3 <skill-base-dir>/scripts/conversation_audit.py <claude-projects-root> deep --all-projects --codex-root <codex-sessions-root>` (the first argument holds every per-project log folder; the parser rejects other flag combinations), or hand off to a cross-project retro if one is installed. Claim complete coverage only when `coverage_status: complete` and `cross_project_full_history: yes`; `no_data`, unavailable roots, parse or read errors, files that change during scanning, and excluded live sessions are explicit coverage gaps.
 
+**Prune requests:** When the user asks to slim, prune, or trim guidance, skills, or rules, collect with `instructions` scope and load [references/prune.md](references/prune.md). Its ledger replaces the finding list, and repairs start only after the user confirms the ledger, even when the request said to fix.
+
 ## Durable Context Preflight
 
 See [references/durable-context.md](references/durable-context.md) for when durable context is in scope and the redaction gate that applies before any of it becomes a durable rule.
@@ -59,7 +61,7 @@ An absent map, a large file, many skills, or a high TODO count is informational 
 
 ## Step 1: Collect data
 
-Run the collection script in summary mode first. Do not interpret yet. On Windows, use the Health-owned launcher so Git for Windows tools are added only to the Bash child process:
+Set `HEALTH_SCOPE` to `instructions` for the static-only scope above, otherwise `auto`, and retain it when escalating. Run the collection script in summary mode first. Do not interpret yet. On Windows, use the Health-owned launcher so Git for Windows tools are added only to the Bash child process:
 
 ```powershell
 $HEALTH_LAUNCHER = @(
@@ -70,7 +72,7 @@ if (-not $HEALTH_LAUNCHER) {
   throw "Health launcher not found under the installed skill base; reinstall Waza."
 }
 $POWERSHELL = Join-Path ([Environment]::SystemDirectory) "WindowsPowerShell\v1.0\powershell.exe"
-& "$POWERSHELL" -NoLogo -NoProfile -ExecutionPolicy Bypass -File "$HEALTH_LAUNCHER" collect
+& "$POWERSHELL" -NoLogo -NoProfile -ExecutionPolicy Bypass -File "$HEALTH_LAUNCHER" collect "$HEALTH_SCOPE"
 ```
 
 `-ExecutionPolicy Bypass` applies only to this PowerShell process; do not change
@@ -89,7 +91,7 @@ if [ ! -f "${HEALTH_SCRIPT:-}" ]; then
   echo "health collect-data.sh not found under the installed skill base; reinstall Waza"
   exit 1
 fi
-BASH_ENV= ENV= /bin/bash -p "$HEALTH_SCRIPT"
+BASH_ENV= ENV= /bin/bash -p "$HEALTH_SCRIPT" "$HEALTH_SCOPE"
 ```
 
 Sections may show `(unavailable)` when tools are missing:
@@ -104,9 +106,9 @@ The collector includes both runtime-specific and agent-agnostic surfaces:
 - `AGENT CONFIG SUMMARY` / `AGENT CONFIG DETAIL` for Codex, Claude, Pi, and project instruction files; its sections start at `=== AGENT INSTRUCTION SURFACE ===`.
 - `AI MAINTAINABILITY SUMMARY` / `AI MAINTAINABILITY DETAIL` for project signals, verification surface, generated mirrors, wrappers, and doc links; its sections start at `=== PROJECT SHAPE ===`.
 
-## Step 1b: MCP Live Check
+## Step 1b: Runtime Inventory and MCP Check
 
-Inspect configured global, project, and installed-plugin sources first, retaining source and enablement. Use the runtime inventory to flag missing executables and managed hooks whose owner may be gone; unknown working directories or plugin state remain coverage gaps. Call a harmless tool only on already connected servers. Never launch an unverified GUI executable just to test MCP. Record connected, failed, disabled, or untested separately; static presence is not live health. Never emit credentials. Compare discovered instruction bytes with the effective configured limit and state any uninspected ancestors, nested files, or runtime overrides.
+Inspect configured global, project, and installed-plugin sources first, retaining source and enablement. Use the runtime inventory to flag missing hook and MCP executables; unknown working directories or plugin state remain coverage gaps. Call a harmless tool only on already connected servers. Never launch an unverified GUI executable just to test MCP. Record connected, failed, disabled, pending approval, or untested separately; static presence is not live health. Never emit credentials. Compare discovered instruction bytes with the effective configured limit and state any uninspected ancestors, nested files, or runtime overrides.
 
 ## Step 1c: Safety and security checks
 
@@ -136,7 +138,7 @@ For projects that use `/loop`, autonomous agents, or any long-running agent flow
 
 ## Step 2: Analyze
 
-Analyze locally from the summary output by default. When Budget posture escalates, re-run collection with `& "$POWERSHELL" -NoLogo -NoProfile -ExecutionPolicy Bypass -File "$HEALTH_LAUNCHER" collect auto deep` on Windows, or `BASH_ENV= ENV= /bin/bash -p "$HEALTH_SCRIPT" auto deep` on Linux and macOS. Then launch only the relevant inspectors in parallel. Redact credentials to `[REDACTED]`.
+Analyze locally from the summary output by default. When Budget posture escalates, re-run collection with `& "$POWERSHELL" -NoLogo -NoProfile -ExecutionPolicy Bypass -File "$HEALTH_LAUNCHER" collect "$HEALTH_SCOPE" deep` on Windows, or `BASH_ENV= ENV= /bin/bash -p "$HEALTH_SCRIPT" "$HEALTH_SCOPE" deep` on Linux and macOS. Then launch only the relevant inspectors in parallel. Redact credentials to `[REDACTED]`.
 
 - **Deep inspector routing:**
   - **Agent 1** (Context + Security): Read `agents/inspector-context.md`. Feed `CONVERSATION SIGNALS` section.

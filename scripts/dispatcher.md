@@ -15,7 +15,7 @@ You have eight skills available. Match the user's intent to the right skill, rea
 | Intent | Skill | File |
 |--------|-------|------|
 | Code review, before merge, release gates, generated artifacts, safety sinks, publish/push/reaction follow-through, triage issues/PRs, project-wide code-quality audit scorecard | check | `skills/check/SKILL.md` |
-| Codex/Claude/Pi ignoring instructions, agent config audit, hooks/MCP broken, health token usage, AI coding code rot, risk-backed hotspot ownership, unreachable project constraints, unclear context, missing verification, stale verifier output | health | `skills/health/SKILL.md` |
+| Codex/Claude/Pi ignoring instructions, agent config audit, prune or slim agent guidance and skills, hooks/MCP broken, health token usage, AI coding code rot, risk-backed hotspot ownership, unreachable project constraints, unclear context, missing verification, stale verifier output | health | `skills/health/SKILL.md` |
 | Error, crash, regression, screenshot-reported defect, test failure, stale cache, runtime boundary, why broken | hunt | `skills/hunt/SKILL.md` |
 | Deep research, unfamiliar domain, compile sources into output | learn | `skills/learn/SKILL.md` |
 | Any URL or PDF to fetch, read this, fetch this page | read | `skills/read/SKILL.md` |
@@ -33,7 +33,7 @@ You have eight skills available. Match the user's intent to the right skill, rea
 If the message could match multiple skills, use these disambiguation rules:
 
 1. Most specific wins: `/ui` is more specific than `/think` for UI decisions.
-2. URL in message: start with `/read`. If the content is research material, chain to `/learn`.
+2. Request to read, fetch, quote, cite, convert, or save a URL/PDF: start with `/read`. If the content is research material, chain to `/learn`.
 3. Code already done vs. code broken: done/PR -> `/check`; error/broken -> `/hunt`.
 4. Config/maintainability vs. code: Codex/Claude misbehaving, hooks/MCP, `/health` token usage, AI coding code rot, unclear context, missing verification, or stale verifier output -> `/health`; user code errors -> `/hunt`.
 5. Release action vs. release prose: commit/tag/publish/push/release reactions/close issue -> `/check`; write release notes/changelog text -> `/write`.
