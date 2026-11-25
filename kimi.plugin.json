@@ -4,7 +4,7 @@
   "interface": {
     "shortDescription": "个人技能合集：think 方案、check 审查、hunt 排错、ui 界面、read 阅读、write 写作、learn 学习、health 配置体检"
   },
-  "version": "3.42.0",
+  "version": "3.42.1",
   "author": {
     "name": "Tw93"
   },
