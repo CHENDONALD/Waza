@@ -1,0 +1,22 @@
+{
+  "name": "waza",
+  "description": "Personal skill collection for Claude Code, Codex, Antigravity, OpenCode, and Pi: think, check, hunt, ui, read, write, learn, and health.",
+  "interface": {
+    "shortDescription": "个人技能合集：think 方案、check 审查、hunt 排错、ui 界面、read 阅读、write 写作、learn 学习、health 配置体检"
+  },
+  "version": "3.42.0",
+  "author": {
+    "name": "Tw93"
+  },
+  "license": "MIT",
+  "skills": [
+    "./skills/think",
+    "./skills/check",
+    "./skills/hunt",
+    "./skills/ui",
+    "./skills/read",
+    "./skills/write",
+    "./skills/learn",
+    "./skills/health"
+  ]
+}
