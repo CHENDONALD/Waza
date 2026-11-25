@@ -1,6 +1,6 @@
 {
   "name": "waza",
-  "version": "3.42.0-fork.1",
+  "version": "3.42.1",
   "description": "Engineering workflow skills: think, check, hunt, ui, read, write, learn, and health.",
   "skills": [
     "./skills/think",
@@ -11,5 +11,10 @@
     "./skills/write",
     "./skills/learn",
     "./skills/health"
-  ]
+  ],
+  "upstream": {
+    "repo": "tw93/Waza",
+    "version": "3.42.0",
+    "mergedAt": "2026-11-25"
+  }
 }
